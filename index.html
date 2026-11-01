@@ -1,0 +1,328 @@
+<title>Phoenix Prototype</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: one phone-shaped app column, centred on desktop with a side note; full-bleed on phones. Bottom tab bar. */
+:root{
+  --bg:#EEF1EF; --surface:#FFFFFF; --ink:#16231F; --muted:#5B6B66; --line:#DCE3E0;
+  --accent:#1F6B57; --accent-soft:#DDEDE7; --amber:#B7791F; --amber-soft:#FBEFD9; --rose:#B4485A; --rose-soft:#F6E1E5;
+  --display:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body:"Figtree", "Segoe UI", system-ui, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1513; --surface:#17211E; --ink:#E6EEEB; --muted:#9AABA5; --line:#2A3833;
+  --accent:#5FC2A2; --accent-soft:#1D3A31; --amber:#E7B663; --amber-soft:#3A2E17; --rose:#E68A9A; --rose-soft:#3D2329; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1513; --surface:#17211E; --ink:#E6EEEB; --muted:#9AABA5; --line:#2A3833;
+  --accent:#5FC2A2; --accent-soft:#1D3A31; --amber:#E7B663; --amber-soft:#3A2E17; --rose:#E68A9A; --rose-soft:#3D2329; color-scheme:dark}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45}
+*{box-sizing:border-box}
+.stage{min-height:100%;display:flex;justify-content:center;align-items:flex-start;gap:48px;padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.side{max-width:300px;padding-top:40px;color:var(--muted);font-size:14px}
+.side h1{font-family:var(--display);font-weight:700;font-size:40px;line-height:1;color:var(--ink);margin:0 0 12px;letter-spacing:-.02em}
+.side p{margin:0 0 12px}
+.side .tag{display:inline-block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:var(--amber-soft);color:var(--amber);padding:3px 8px;border-radius:4px;margin-bottom:16px;font-weight:600}
+@media (max-width:820px){.side{display:none}.stage{padding:0}}
+.phone{width:100%;max-width:400px;background:var(--bg);border:1px solid var(--line);border-radius:28px;overflow:hidden;display:flex;flex-direction:column;height:min(820px,calc(100vh - 48px));position:relative}
+@media (max-width:820px){.phone{border:0;border-radius:0;max-width:none;height:100%}}
+.demo{font-size:11px;letter-spacing:.06em;text-transform:uppercase;text-align:center;background:var(--amber-soft);color:var(--amber);padding:5px;font-weight:600}
+.top{padding:18px 20px 6px;display:flex;justify-content:space-between;align-items:center}
+.brand{font-family:var(--display);font-weight:700;font-size:22px;letter-spacing:-.02em}
+.brand span{color:var(--accent)}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:600;font-size:13px}
+main{flex:1;overflow-y:auto;padding:6px 20px 24px}
+h2{font-family:var(--display);font-weight:700;font-size:26px;line-height:1.1;letter-spacing:-.02em;margin:8px 0 4px;text-wrap:balance}
+h3{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:22px 0 8px;font-weight:600}
+.sub{color:var(--muted);margin:0 0 14px}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+.stack{display:flex;flex-direction:column;gap:10px}
+.hero{background:var(--accent);color:#fff;border:0}
+:root[data-theme="dark"] .hero{color:#08140F}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .hero{color:#08140F}}
+.hero .label{font-size:12px;letter-spacing:.06em;text-transform:uppercase;opacity:.85}
+.hero .big{font-family:var(--mono);font-size:38px;font-weight:500;margin:4px 0 2px;letter-spacing:-.02em}
+.hero .note{font-size:13px;opacity:.9}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.row > div{min-width:0}
+.pill{font-size:12px;padding:3px 9px;border-radius:999px;font-weight:600;white-space:nowrap}
+.pill.good{background:var(--accent-soft);color:var(--accent)}
+.pill.warn{background:var(--amber-soft);color:var(--amber)}
+.pill.owe{background:var(--rose-soft);color:var(--rose)}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:10px}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .4s}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mini .k{font-size:12px;color:var(--muted)}
+.mini .v{font-family:var(--mono);font-size:20px;margin-top:2px}
+.list{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-top:1px solid var(--line)}
+.li:first-child{border-top:0}
+.li .t{font-weight:500}
+.li .s{font-size:12px;color:var(--muted)}
+.li input[type=number]{width:92px;text-align:right;font-family:var(--mono);font-size:14px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:6px 8px}
+.compare{display:grid;grid-template-columns:1fr auto auto;gap:6px 14px;font-size:14px;align-items:center}
+.compare .h{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:right}
+.compare .r{text-align:right}
+.check{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-top:1px solid var(--line);cursor:pointer}
+.check:first-child{border-top:0}
+.check input{width:20px;height:20px;accent-color:var(--accent);margin-top:2px;flex:none}
+.check .t{font-weight:500}
+.check .s{font-size:12px;color:var(--muted)}
+.check.done .t{text-decoration:line-through;color:var(--muted)}
+button,.btn{font:inherit;font-weight:600;border:0;border-radius:12px;padding:12px 16px;background:var(--accent);color:#fff;cursor:pointer}
+:root[data-theme="dark"] button,:root[data-theme="dark"] .btn{color:#08140F}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) button{color:#08140F}}
+button.ghost{background:var(--accent-soft);color:var(--accent)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+form.add{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+form.add input,form.add select{font:inherit;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:10px;min-width:0}
+form.add .full{grid-column:1/-1}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.soon{border-style:dashed}
+.soon .badge{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+nav{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line);background:var(--surface);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav button{background:none;color:var(--muted);border-radius:0;padding:10px 2px 12px;font-size:11px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:4px}
+nav button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav button[aria-current="page"]{color:var(--accent)}
+.toast{position:absolute;left:50%;bottom:84px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:13px;font-weight:500}
+.ob{position:absolute;inset:0;background:var(--bg);z-index:5;display:flex;flex-direction:column;padding:28px 22px;overflow-y:auto}
+.ob h2{font-size:30px}
+.opts{display:flex;flex-direction:column;gap:8px;margin:14px 0}
+.opt{text-align:left;background:var(--surface);color:var(--ink);border:1px solid var(--line);font-weight:500}
+.opt[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.dots{display:flex;gap:6px;margin-bottom:22px}.dots i{width:22px;height:4px;border-radius:9px;background:var(--line)}.dots i.on{background:var(--accent)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<div class="stage">
+  <aside class="side">
+    <div class="tag">Clickable prototype · demo data</div>
+    <h1>Phoenix</h1>
+    <p>The money companion for women in the first year after a separation.</p>
+    <p>Start: rebuild a single-income budget, settle shared kids' costs, clear the admin. Next: open banking, then investing and euro-stablecoin savings.</p>
+    <p>Everything here is fictional demo data for "Camille". Changes stay in this browser only.</p>
+  </aside>
+
+  <div class="phone" id="app">
+    <div class="demo">Demo · fictional data</div>
+    <div class="top"><div class="brand">Phoenix<span>.</span></div><div class="avatar" aria-label="Camille">CM</div></div>
+    <main id="view" tabindex="-1"></main>
+    <nav aria-label="Sections">
+      <button data-tab="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Home</button>
+      <button data-tab="budget"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>Budget</button>
+      <button data-tab="kids"><svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2 20c0-3.3 2.7-6 6-6s6 2.7 6 6M14 20c0-2.5 1.3-4.5 3-4.5s4 1.5 4 4.5"/></svg>Kids</button>
+      <button data-tab="admin"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>Admin</button>
+      <button data-tab="grow"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg>Grow</button>
+    </nav>
+    <div class="toast" id="toast" hidden></div>
+    <div class="ob" id="ob" hidden></div>
+  </div>
+</div>
+
+<script>
+const eur = n => (n<0?"−":"") + "€" + Math.abs(Math.round(n)).toLocaleString("en-GB");
+const KEY = "phoenix-proto-v1";
+const seed = () => ({
+  onboarded:false,
+  profile:{stage:"Divorce in progress", kids:"2 children", home:"Renting alone"},
+  before:{income:6100, spend:4950},
+  income:[
+    {id:"sal",t:"Salary (net)",s:"Project manager",v:2650},
+    {id:"cs",t:"Child support received",s:"From Thomas, set by the court",v:380},
+    {id:"caf",t:"Family benefits",s:"CAF allocations familiales",v:148}
+  ],
+  spend:[
+    {id:"rent",t:"Rent",s:"2-bed flat, Lyon 7e",v:1150},
+    {id:"util",t:"Energy & water",v:140},
+    {id:"food",t:"Groceries",v:520},
+    {id:"care",t:"Childcare & canteen",v:260},
+    {id:"tr",t:"Transport",v:110},
+    {id:"ins",t:"Insurance & mutuelle",v:95},
+    {id:"tel",t:"Phone & internet",v:45},
+    {id:"fun",t:"Kids' activities & leisure",v:150}
+  ],
+  kids:[
+    {d:"2026-10-03",t:"School supplies",cat:"School",amt:96,by:"me"},
+    {d:"2026-10-08",t:"Orthodontist (after reimbursement)",cat:"Health",amt:180,by:"me"},
+    {d:"2026-10-14",t:"Swimming club, term 1",cat:"Activities",amt:210,by:"ex"},
+    {d:"2026-10-22",t:"Winter coats",cat:"Clothes",amt:148,by:"me"},
+    {d:"2026-10-29",t:"Half-term holiday camp",cat:"Activities",amt:120,by:"ex"}
+  ],
+  split:50,
+  admin:{t1:true,t2:true,t3:false,t4:false,t5:false,t6:true,t7:false,t8:false,t9:false,t10:false,t11:false,t12:false},
+  cushionSaved:2400, monthly:250, waitlist:false
+});
+let S;
+try{ S = JSON.parse(localStorage.getItem(KEY)) || seed(); }catch(e){ S = seed(); }
+const save = () => { try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} };
+
+const ADMIN = [
+  {phase:"First 30 days", items:[
+    ["t1","Open an account in your own name","Your salary and child support should land somewhere only you control."],
+    ["t2","Redirect your salary","Give HR your new IBAN."],
+    ["t3","Close or split the joint account","Agree on the remaining balance in writing first."],
+    ["t4","Change passwords and shared logins","Banking, tax portal, email, streaming."]]},
+  {phase:"Within 3 months", items:[
+    ["t5","Declare your change of situation on impots.gouv.fr","Within 60 days. Your withholding rate (prélèvement à la source) changes."],
+    ["t6","Tell the CAF","Family benefits and housing aid are recalculated on your new situation."],
+    ["t7","Take your own mutuelle and home insurance","Check whether the children stay on yours or his."],
+    ["t8","Ask the bank to release you from the joint loan","Désolidarisation, if the house or a loan stays with him."]]},
+  {phase:"Within 12 months", items:[
+    ["t9","Change the beneficiary on your assurance-vie","The standard clause still names \"my spouse\"."],
+    ["t10","Check your pension record","Look for missing quarters during part-time or parental-leave years."],
+    ["t11","File your first individual tax return","Claim the extra half-share for single parents (case T)."],
+    ["t12","Set up child support collection via ARIPA","The CAF collects and pays it, so you never chase a missed payment."]]}
+];
+
+const sum = a => a.reduce((x,y)=>x+(+y.v||0),0);
+const kidsBalance = () => {
+  let mine=0, his=0;
+  S.kids.forEach(k=> k.by==="me" ? mine+=k.amt : his+=k.amt);
+  const total = mine+his, myShare = total*S.split/100;
+  return {total, mine, his, owed: mine - myShare}; // >0: he owes me
+};
+const cushionTarget = () => sum(S.spend)*3;
+
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.hidden=false;clearTimeout(t._h);t._h=setTimeout(()=>t.hidden=true,2200);}
+
+const views = {
+home(){
+  const inc=sum(S.income), sp=sum(S.spend), left=inc-sp, kb=kidsBalance(), tgt=cushionTarget();
+  const done=Object.values(S.admin).filter(Boolean).length, all=Object.keys(S.admin).length;
+  const next = ADMIN.flatMap(p=>p.items).filter(i=>!S.admin[i[0]]).slice(0,2);
+  return `
+  <h2>Good evening, Camille</h2><p class="sub">Here is where you stand this month.</p>
+  <div class="stack">
+    <div class="card hero"><div class="label">Left to live on this month</div>
+      <div class="big">${eur(left)}</div><div class="note">${eur(inc)} in, ${eur(sp)} out. Your old household had ${eur(S.before.income-S.before.spend)} spare.</div></div>
+    <div class="grid2">
+      <div class="card mini"><div class="k">Kids' costs</div><div class="v">${eur(Math.abs(kb.owed))}</div>
+        <div style="margin-top:6px"><span class="pill ${kb.owed>=0?'good':'owe'}">${kb.owed>=0?'Thomas owes you':'You owe Thomas'}</span></div></div>
+      <div class="card mini"><div class="k">Admin done</div><div class="v">${done}/${all}</div><div class="bar"><i style="width:${done/all*100}%"></i></div></div>
+    </div>
+    <div class="card"><div class="row"><div><div class="t" style="font-weight:600">Safety cushion</div><div class="sub" style="margin:0;font-size:13px">3 months of expenses</div></div><span class="num">${eur(S.cushionSaved)} / ${eur(tgt)}</span></div>
+      <div class="bar"><i style="width:${Math.min(100,S.cushionSaved/tgt*100)}%"></i></div></div>
+  </div>
+  <h3>Next steps</h3>
+  <div class="list">${next.map(i=>`<div class="li"><div><div class="t">${i[1]}</div><div class="s">${i[2]}</div></div><span class="pill warn">To do</span></div>`).join("")}</div>`;
+},
+budget(){
+  const inc=sum(S.income), sp=sum(S.spend), left=inc-sp;
+  const row = (arr,key) => arr.map(i=>`<div class="li"><div><div class="t">${i.t}</div>${i.s?`<div class="s">${i.s}</div>`:""}</div>
+     <label class="sr"><input type="number" inputmode="decimal" id="${key}-${i.id}" data-k="${key}" data-id="${i.id}" value="${i.v}" aria-label="${i.t}"></label></div>`).join("");
+  return `
+  <h2>Your new budget</h2><p class="sub">One income now. Adjust any line; totals update live.</p>
+  <div class="card"><div class="compare">
+    <span></span><span class="h">Before</span><span class="h">Now</span>
+    <span>Money in</span><span class="r num">${eur(S.before.income)}</span><span class="r num">${eur(inc)}</span>
+    <span>Money out</span><span class="r num">${eur(S.before.spend)}</span><span class="r num">${eur(sp)}</span>
+    <strong>Left over</strong><strong class="r num">${eur(S.before.income-S.before.spend)}</strong><strong class="r num" style="color:${left>=0?'var(--accent)':'var(--rose)'}">${eur(left)}</strong>
+  </div></div>
+  <h3>Money in · <span class="num">${eur(inc)}</span></h3><div class="list">${row(S.income,"income")}</div>
+  <h3>Money out · <span class="num">${eur(sp)}</span></h3><div class="list">${row(S.spend,"spend")}</div>`;
+},
+kids(){
+  const kb=kidsBalance();
+  return `
+  <h2>Shared kids' costs</h2><p class="sub">Léa (9) and Noah (6). Costs split ${S.split}/${100-S.split} with Thomas, as in the divorce agreement.</p>
+  <div class="card"><div class="row"><div><div style="font-size:13px;color:var(--muted)">${kb.owed>=0?"Thomas owes you":"You owe Thomas"}</div><div class="num" style="font-size:30px">${eur(Math.abs(kb.owed))}</div></div>
+    <button class="ghost" id="share">Send summary</button></div>
+    <div class="grid2" style="margin-top:12px;font-size:13px;color:var(--muted)"><div>You paid <span class="num" style="color:var(--ink)">${eur(kb.mine)}</span></div><div>Thomas paid <span class="num" style="color:var(--ink)">${eur(kb.his)}</span></div></div>
+    <label style="display:block;margin-top:14px;font-size:13px;color:var(--muted)" for="split">Your share: <span class="num">${S.split}%</span></label>
+    <input type="range" id="split" min="0" max="100" step="5" value="${S.split}"></div>
+  <h3>Add an expense</h3>
+  <form class="add card" id="addk">
+    <input class="full" id="kt" placeholder="What was it for?" required>
+    <input id="ka" type="number" inputmode="decimal" placeholder="Amount €" min="1" required>
+    <select id="kc"><option>School</option><option>Health</option><option>Activities</option><option>Clothes</option><option>Other</option></select>
+    <select class="full" id="kb"><option value="me">I paid</option><option value="ex">Thomas paid</option></select>
+    <button class="full" type="submit">Add expense</button>
+  </form>
+  <h3>October</h3>
+  <div class="list">${[...S.kids].reverse().map(k=>`<div class="li"><div><div class="t">${k.t}</div><div class="s">${k.cat} · ${new Date(k.d).toLocaleDateString("en-GB",{day:"numeric",month:"short"})} · ${k.by==="me"?"You paid":"Thomas paid"}</div></div><span class="num">${eur(k.amt)}</span></div>`).join("")}</div>`;
+},
+admin(){
+  const done=Object.values(S.admin).filter(Boolean).length, all=Object.keys(S.admin).length;
+  return `
+  <h2>Admin checklist</h2><p class="sub">What to change in France after a separation, in the order it matters.</p>
+  <div class="card"><div class="row"><span>${done} of ${all} done</span><span class="pill ${done===all?'good':'warn'}">${done===all?'All clear':'In progress'}</span></div><div class="bar"><i style="width:${done/all*100}%"></i></div></div>
+  ${ADMIN.map(p=>`<h3>${p.phase}</h3><div class="list">${p.items.map(i=>`<label class="check ${S.admin[i[0]]?'done':''}"><input type="checkbox" id="${i[0]}" data-a="${i[0]}" ${S.admin[i[0]]?'checked':''}><div><div class="t">${i[1]}</div><div class="s">${i[2]}</div></div></label>`).join("")}</div>`).join("")}`;
+},
+grow(){
+  const tgt=cushionTarget(), gap=Math.max(0,tgt-S.cushionSaved), months=S.monthly>0?Math.ceil(gap/S.monthly):Infinity;
+  return `
+  <h2>Grow</h2><p class="sub">First a safety cushion, then your own investments.</p>
+  <div class="card"><div class="row"><div><div style="font-weight:600">Safety cushion</div><div style="font-size:13px;color:var(--muted)">3 months of your new expenses</div></div><span class="pill ${gap===0?'good':'warn'}">${gap===0?'Reached':months+' months to go'}</span></div>
+    <div class="num" style="font-size:28px;margin-top:10px">${eur(S.cushionSaved)} <span style="font-size:15px;color:var(--muted)">of ${eur(tgt)}</span></div>
+    <div class="bar"><i style="width:${Math.min(100,S.cushionSaved/tgt*100)}%"></i></div>
+    <label for="mon" style="display:block;margin-top:16px;font-size:13px;color:var(--muted)">Put aside each month: <span class="num" style="color:var(--ink)">${eur(S.monthly)}</span></label>
+    <input type="range" id="mon" min="0" max="800" step="25" value="${S.monthly}">
+    <div style="font-size:13px;color:var(--muted);margin-top:6px">${gap===0?"Done. Anything above this can start working for you.":`At this pace you reach it in ${new Date(new Date(2026,10,1).setMonth(10+months)).toLocaleDateString("en-GB",{month:"long",year:"numeric"})}.`}</div></div>
+  <h3>Coming next</h3>
+  <div class="stack">
+    <div class="card soon"><div class="badge">Phase 2</div><div style="font-weight:600;margin-top:4px">Connect your bank accounts</div><div style="font-size:13px;color:var(--muted)">Your budget fills itself, via a licensed open-banking partner.</div></div>
+    <div class="card soon"><div class="badge">Phase 3</div><div style="font-weight:600;margin-top:4px">Invest in your own name</div><div style="font-size:13px;color:var(--muted)">Simple ETF portfolios and an assurance-vie, starting from €25 a month.</div></div>
+    <div class="card soon"><div class="badge">Phase 3</div><div style="font-weight:600;margin-top:4px">Euro stablecoin savings</div><div style="font-size:13px;color:var(--muted)">Hold and move money instantly in a MiCA-regulated euro stablecoin.</div></div>
+    <button id="wait" ${S.waitlist?'class="ghost"':''}>${S.waitlist?"You're on the early-access list":"Join early access"}</button>
+  </div>`;
+}
+};
+
+let tab="home";
+function render(){
+  document.getElementById("view").innerHTML = views[tab]();
+  document.querySelectorAll("nav button").forEach(b=>b.setAttribute("aria-current", b.dataset.tab===tab?"page":"false"));
+}
+document.querySelector("nav").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;tab=b.dataset.tab;render();document.getElementById("view").scrollTop=0;});
+const view=document.getElementById("view");
+view.addEventListener("change",e=>{
+  const el=e.target;
+  if(el.dataset.k){const it=S[el.dataset.k].find(x=>x.id===el.dataset.id);it.v=Math.max(0,+el.value||0);save();render();}
+  if(el.dataset.a){S.admin[el.dataset.a]=el.checked;save();render();if(el.checked)toast("Done. One less thing.");}
+});
+view.addEventListener("input",e=>{
+  if(e.target.id==="split"){S.split=+e.target.value;save();render();document.getElementById("split").focus();}
+  if(e.target.id==="mon"){S.monthly=+e.target.value;save();render();document.getElementById("mon").focus();}
+});
+view.addEventListener("submit",e=>{
+  if(e.target.id!=="addk")return; e.preventDefault();
+  const t=document.getElementById("kt").value.trim(), a=+document.getElementById("ka").value;
+  if(!t||!(a>0))return;
+  S.kids.push({d:"2026-10-31",t,cat:document.getElementById("kc").value,amt:a,by:document.getElementById("kb").value});
+  save();render();toast("Expense added. Balance updated.");
+});
+view.addEventListener("click",e=>{
+  if(e.target.id==="share")toast("Summary ready to send to Thomas (demo)");
+  if(e.target.id==="wait"){S.waitlist=true;save();render();toast("You're on the list.");}
+});
+
+/* Onboarding: 3 quick questions, prefilled for the demo persona */
+const OB=[
+  {k:"stage",q:"Where are you in the separation?",o:["Thinking about it","Divorce in progress","Divorce final, less than a year ago","Separated, not married (PACS or cohabiting)"]},
+  {k:"kids",q:"Do you have children together?",o:["No children","1 child","2 children","3 or more"]},
+  {k:"home",q:"Where are you living now?",o:["Staying in our home","Renting alone","With family or friends for now","Not sure yet"]}
+];
+let step=0;
+function renderOB(){
+  const ob=document.getElementById("ob");
+  if(S.onboarded){ob.hidden=true;return;}
+  ob.hidden=false;
+  const s=OB[step];
+  ob.innerHTML=`<div class="dots">${OB.map((_,i)=>`<i class="${i<=step?'on':''}"></i>`).join("")}</div>
+   <div class="brand" style="margin-bottom:24px">Phoenix<span>.</span></div>
+   <h2>${s.q}</h2><p class="sub">This shapes your budget and checklist. You can change it later.</p>
+   <div class="opts">${s.o.map(o=>`<button class="opt" aria-pressed="${S.profile[s.k]===o}" data-v="${o}">${o}</button>`).join("")}</div>
+   <div style="margin-top:auto;display:flex;gap:8px"><button class="ghost" id="skip">Skip</button><button id="nx" style="flex:1">${step<OB.length-1?"Continue":"See my plan"}</button></div>`;
+}
+document.getElementById("ob").addEventListener("click",e=>{
+  const o=e.target.closest(".opt");
+  if(o){S.profile[OB[step].k]=o.dataset.v;renderOB();return;}
+  if(e.target.id==="nx"){ if(step<OB.length-1){step++;renderOB();} else {S.onboarded=true;save();renderOB();render();} }
+  if(e.target.id==="skip"){S.onboarded=true;save();renderOB();render();}
+});
+render(); renderOB();
+</script>
